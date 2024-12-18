@@ -1,5 +1,5 @@
 use std::{
-    io,
+    i32, io,
     time::{Duration, SystemTime},
 };
 
@@ -14,24 +14,57 @@ use tokio::time::error::Elapsed;
 
 #[tokio::main]
 async fn main() {
-    println!("Welcome, call elevator");
-    println!("1. call elevator \n2. exit");
-
     let seconds = Duration::from_secs(5);
     let start = SystemTime::now();
-    let mut input = String::new();
     let stdin = io::stdin();
-    stdin.read_line(&mut input).expect("fail");
 
-    input = input.trim().to_string();
+    println!("Welcome, call elevator");
 
-    loop {
-        std::thread::sleep(Duration::new(2, 0));
-        match start.elapsed() {
-            Ok(elapsed) if elapsed > seconds => {
-                return;
+    'menu: loop {
+        println!("1. call elevator \n2. exit");
+        let mut input = String::new();
+        stdin.read_line(&mut input).expect("fail");
+
+        let choice = input.trim().parse::<u32>();
+
+        match choice {
+            Ok(1) => {
+                std::thread::sleep(Duration::new(2, 0));
+                let mut actual_floor = "";
+                loop {
+                    println!("Select floor");
+                    println!("1\n2\n3\n4");
+                    println!("actual floor: {}", actual_floor);
+
+                    let mut floor = String::new();
+                    stdin.read_line(&mut floor).expect("fail");
+
+                    let floor_choice = floor.trim().parse::<u32>();
+                    match floor_choice {
+                        Ok(1) => {
+                            println!("{:?}", floor_choice);
+                        }
+                        Ok(2) => {
+                            println!("{:?}", floor_choice);
+                        }
+                        Ok(3) => {
+                            println!("{:?}", floor_choice);
+                        }
+                        Ok(4) => {
+                            println!("See you later");
+                            break 'menu;
+                        }
+                        _ => print!("Option not allowed"),
+                    };
+                }
             }
-            _ => (),
-        }
+            Ok(2) => {
+                println!("See you later");
+                break;
+            }
+            _ => {
+                println!("fail")
+            }
+        };
     }
 }
